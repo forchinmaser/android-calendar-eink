@@ -1,0 +1,116 @@
+package me.proton.android.calendar
+
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import androidx.lifecycle.LiveData
+import androidx.work.Operation
+import androidx.work.WorkManager
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.launch
+import me.proton.android.calendar.common.worker.HandleAlarmsWorker
+import me.proton.android.calendar.common.worker.PeriodicCalendarWorker
+import me.proton.android.calendar.domain.Logger
+import me.proton.android.calendar.domain.usecase.MigrateEventMetadataToOccurrencesUseCase
+import me.proton.core.accountmanager.domain.AccountManager
+import me.proton.core.domain.entity.UserId
+import javax.inject.Inject
+
+@DelicateCoroutinesApi
+@AndroidEntryPoint
+class ProtonCalendarBroadcastReceiver : BroadcastReceiver() {
+
+    @Inject
+    lateinit var logger: Logger
+    @Inject
+    lateinit var accountManager: AccountManager
+    @Inject
+    lateinit var workManager: WorkManager
+    @Inject
+    lateinit var migrateEventMetadataToOccurrencesUseCase: MigrateEventMetadataToOccurrencesUseCase
+
+    override fun onReceive(context: Context?, intent: Intent?) {
+
+        if (intent == null) {
+            return
+        }
+
+        logger.v("intent in ProtonCalendarBroadcastReceiver: $intent")
+
+        when (intent.action) {
+            Intent.ACTION_BOOT_COMPLETED -> {
+                if (context == null) {
+                    logger.e("null Context in ProtonCalendarBroadcastReceiver ACTION_BOOT_COMPLETED")
+                } else {
+                    PeriodicCalendarWorker.setup(workManager, logger)
+
+                    try {
+                        GlobalScope.launch(Dispatchers.IO) {
+
+                            val userId = accountManager.getPrimaryUserId().firstOrNull()
+                            if (userId != null) {
+                                handleAlarms(userId, context)
+                            }
+
+                        }
+                    } catch (e: Exception) {
+                        logger.e("ProtonCalendarBroadcastReceiver, boot completed handle alarms error", e)
+                    }
+                }
+            }
+            Intent.ACTION_MY_PACKAGE_REPLACED -> {
+                if (context == null) {
+                    logger.e("null Context in ProtonCalendarBroadcastReceiver ACTION_MY_PACKAGE_REPLACED")
+                } else {
+                    try {
+                        GlobalScope.launch(Dispatchers.IO) {
+                            migrateEventMetadataToOccurrencesUseCase.execute()
+                        }
+                    } catch (e: Exception) {
+                        logger.e("ProtonCalendarBroadcastReceiver, migrateEventMetadataToOccurrencesUseCase error", e)
+                    }
+                }
+            }
+            INTENT_ACTION_EVENT_ALARM -> {
+                if (context == null) {
+                    logger.e("null Context in ProtonCalendarBroadcastReceiver INTENT_ACTION_EVENT_ALARM")
+                } else {
+                    try {
+                        GlobalScope.launch(Dispatchers.IO){
+
+                            val alarmTimestamp = if (intent.hasExtra(INTENT_EXTRA_EVENT_ALARM_TIMESTAMP_SECONDS)) intent.getLongExtra(
+                                INTENT_EXTRA_EVENT_ALARM_TIMESTAMP_SECONDS,
+                                0
+                            ) else null
+
+                            val userId = accountManager.getPrimaryUserId().firstOrNull()
+                            if (userId != null) {
+                                handleAlarms(userId, context, alarmTimestamp)
+                            }
+
+                        }
+                    } catch (e: Exception) {
+                        logger.e("ProtonCalendarBroadcastReceiver, handle alarm intent error", e)
+                    }
+                }
+            }
+            else -> {
+                logger.e("ProtonCalendarBroadcastReceiver unknown intent action: ${intent.action}")
+            }
+        }
+    }
+
+    private fun handleAlarms(userId: UserId, context: Context, alarmEpochSeconds: Long? = null): LiveData<Operation.State> {
+        return HandleAlarmsWorker.enqueue(workManager, userId = userId.id, alarmEpochSeconds)
+    }
+
+    companion object {
+        const val INTENT_ACTION_EVENT_ALARM = "INTENT_ACTION_EVENT_ALARM"
+
+        const val INTENT_EXTRA_EVENT_ALARM_TIMESTAMP_SECONDS = "INTENT_EXTRA_EVENT_ALARM_TIMESTAMP_SECONDS"
+    }
+}
