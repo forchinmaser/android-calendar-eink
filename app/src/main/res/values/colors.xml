@@ -1,4 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  TIER 1 — replacement for the EXISTING app/src/main/res/values/colors.xml.
+
+  These names are declared in the app module, so they cannot be overridden from
+  colors_eink.xml — a duplicate name in the same module fails the build. They are
+  edited in place here instead. Structure and comments are the original file's;
+  only the values change.
+
+  The twenty *_base colours stay DECLARED because CalendarFormFragment's colour
+  picker and the API's displayColor both reference them, and the server round-trips
+  the hex. They are collapsed to ink so nothing renders a hue; calendar identity is
+  carried by CalendarPattern, which keys off the ORIGINAL hex values — those live in
+  CalendarPattern.BY_HEX, not here.
+-->
 <resources>
     <!-- global color mapping -->
 
@@ -11,26 +25,28 @@
     <color name="textColorValidationError">@color/notification_error</color>
 
     <!-- constant colors, do not change in dark mode -->
-    <color name="text_on_calendar_color">#FFFFFF</color>
+    <!-- Event text sits on paper now, not on a filled colour chip. Inverted text on a
+         solid slateblue chip is handled in code (WeekViewCalendarEntity), not here. -->
+    <color name="text_on_calendar_color">@color/ink</color>
 
-    <color name="purple_base">#8080FF</color>
-    <color name="strawberry_base">#EC3E7C</color>
-    <color name="pink_base">#DB60D6</color>
-    <color name="carrot_base">#F78400</color>
-    <color name="sahara_base">#936D58</color>
-    <color name="enzian_base">#5252CC</color>
-    <color name="plum_base">#A839A4</color>
-    <color name="cerise_base">#BA1E55</color>
-    <color name="copper_base">#C44800</color>
-    <color name="soil_base">#54473F</color>
-    <color name="slateblue_base">#415DF0</color>
-    <color name="pacific_base">#179FD9</color>
-    <color name="reef_base">#1DA583</color>
-    <color name="fern_base">#3CBB3A</color>
-    <color name="olive_base">#B4A40E</color>
-    <color name="cobalt_base">#273EB2</color>
-    <color name="ocean_base">#0A77A6</color>
-    <color name="pine_base">#0F735A</color>
-    <color name="forest_base">#258723</color>
-    <color name="pickle_base">#807304</color>
+    <color name="purple_base">@color/ink</color>
+    <color name="strawberry_base">@color/ink</color>
+    <color name="pink_base">@color/ink</color>
+    <color name="carrot_base">@color/ink</color>
+    <color name="sahara_base">@color/ink</color>
+    <color name="enzian_base">@color/ink</color>
+    <color name="plum_base">@color/ink</color>
+    <color name="cerise_base">@color/ink</color>
+    <color name="copper_base">@color/ink</color>
+    <color name="soil_base">@color/ink</color>
+    <color name="slateblue_base">@color/ink</color>
+    <color name="pacific_base">@color/ink</color>
+    <color name="reef_base">@color/ink</color>
+    <color name="fern_base">@color/ink</color>
+    <color name="olive_base">@color/ink</color>
+    <color name="cobalt_base">@color/ink</color>
+    <color name="ocean_base">@color/ink</color>
+    <color name="pine_base">@color/ink</color>
+    <color name="forest_base">@color/ink</color>
+    <color name="pickle_base">@color/ink</color>
 </resources>
