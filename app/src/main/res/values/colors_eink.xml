@@ -1,1 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  TIER 1 — proton-core palette override.
+  Drop in app/src/main/res/values/colors_eink.xml.
 
+  Every one of these names is defined in proton-core (presentation/res/values/colors.xml)
+  and resolved through ?attr/… or @color/… across the app's XML layouts. Redefining them
+  in the app module shadows the library values with no code change.
+
+  Two tones only: paper (#FFFFFF) and ink (#000000). Where the design needs a third step,
+  it uses a border or an inversion, never a grey — greys dither on E Ink and read as noise.
+  ink_60 exists solely for the hairline grid rules in MonthView / week-view-core, which
+  are drawn, not filled.
+-->
+<resources>
+
+    <color name="ink">#000000</color>
+    <color name="paper">#FFFFFF</color>
+    <color name="ink_60">#99000000</color>
+
+    <!-- backgrounds -->
+    <color name="background_norm">@color/paper</color>
+    <color name="background_secondary">@color/paper</color>
+    <color name="background_deep">@color/paper</color>
+
+    <!-- text -->
+    <color name="text_norm">@color/ink</color>
+    <color name="text_weak">@color/ink</color>
+    <color name="text_hint">@color/ink_60</color>
+    <color name="text_disabled">@color/ink_60</color>
+    <color name="text_inverted">@color/paper</color>
+    <color name="text_accent">@color/ink</color>
+
+    <!-- icons -->
+    <color name="icon_norm">@color/ink</color>
+    <color name="icon_weak">@color/ink</color>
+    <color name="icon_hint">@color/ink_60</color>
+    <color name="icon_disabled">@color/ink_60</color>
+    <color name="icon_inverted">@color/paper</color>
+    <color name="icon_accent">@color/ink</color>
+
+    <!-- interaction: no tinted states. pressed == inverted, handled per-widget. -->
+    <color name="interaction_norm">@color/ink</color>
+    <color name="interaction_norm_pressed">@color/ink</color>
+    <color name="interaction_norm_disabled">@color/ink_60</color>
+    <color name="interaction_weak">@color/paper</color>
+    <color name="interaction_weak_pressed">@color/paper</color>
+
+    <!-- separators: full-strength ink. 1dp at 2px physical is the MMD divider. -->
+    <color name="separator_norm">@color/ink</color>
+
+    <!-- ripple: fully transparent. See also the theme override in themes_eink.xml. -->
+    <color name="ripple_norm_workaround">#00000000</color>
+
+    <!-- notifications: shape and copy carry severity, not hue -->
+    <color name="notification_norm">@color/ink</color>
+    <color name="notification_error">@color/ink</color>
+    <color name="notification_warning">@color/ink</color>
+    <color name="notification_success">@color/ink</color>
+
+    <!-- Event text sits on paper now, not on a filled colour chip. -->
+    <color name="text_on_calendar_color">@color/ink</color>
+
+    <!--
+      The twenty *_base calendar colours stay DEFINED — CalendarFormFragment's colour
+      picker and the API's displayColor both reference them, and the server round-trips
+      the hex. They are collapsed to ink so nothing renders a hue; identity is carried by
+      CalendarPattern (see patches/CalendarPattern.kt), which keys off these same names.
+    -->
+    <color name="purple_base">@color/ink</color>
+    <color name="strawberry_base">@color/ink</color>
+    <color name="pink_base">@color/ink</color>
+    <color name="carrot_base">@color/ink</color>
+    <color name="sahara_base">@color/ink</color>
+    <color name="enzian_base">@color/ink</color>
+    <color name="plum_base">@color/ink</color>
+    <color name="cerise_base">@color/ink</color>
+    <color name="copper_base">@color/ink</color>
+    <color name="soil_base">@color/ink</color>
+    <color name="slateblue_base">@color/ink</color>
+    <color name="pacific_base">@color/ink</color>
+    <color name="reef_base">@color/ink</color>
+    <color name="fern_base">@color/ink</color>
+    <color name="olive_base">@color/ink</color>
+    <color name="cobalt_base">@color/ink</color>
+    <color name="ocean_base">@color/ink</color>
+    <color name="pine_base">@color/ink</color>
+    <color name="forest_base">@color/ink</color>
+    <color name="pickle_base">@color/ink</color>
+
+</resources>
