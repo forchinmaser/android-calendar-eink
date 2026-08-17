@@ -58,34 +58,12 @@
     <color name="notification_warning">@color/ink</color>
     <color name="notification_success">@color/ink</color>
 
-    <!-- Event text sits on paper now, not on a filled colour chip. -->
-    <color name="text_on_calendar_color">@color/ink</color>
-
     <!--
-      The twenty *_base calendar colours stay DEFINED — CalendarFormFragment's colour
-      picker and the API's displayColor both reference them, and the server round-trips
-      the hex. They are collapsed to ink so nothing renders a hue; identity is carried by
-      CalendarPattern (see patches/CalendarPattern.kt), which keys off these same names.
+      NOT HERE: text_on_calendar_color and the twenty *_base calendar colours.
+      Those are already declared in this module's own colors.xml, and declaring a
+      resource name twice in the SAME module is a hard "Duplicate resources" build
+      error — the shadowing trick only works across modules (app beats proton-core).
+      They are edited in place instead; see colors.xml in this same folder.
     -->
-    <color name="purple_base">@color/ink</color>
-    <color name="strawberry_base">@color/ink</color>
-    <color name="pink_base">@color/ink</color>
-    <color name="carrot_base">@color/ink</color>
-    <color name="sahara_base">@color/ink</color>
-    <color name="enzian_base">@color/ink</color>
-    <color name="plum_base">@color/ink</color>
-    <color name="cerise_base">@color/ink</color>
-    <color name="copper_base">@color/ink</color>
-    <color name="soil_base">@color/ink</color>
-    <color name="slateblue_base">@color/ink</color>
-    <color name="pacific_base">@color/ink</color>
-    <color name="reef_base">@color/ink</color>
-    <color name="fern_base">@color/ink</color>
-    <color name="olive_base">@color/ink</color>
-    <color name="cobalt_base">@color/ink</color>
-    <color name="ocean_base">@color/ink</color>
-    <color name="pine_base">@color/ink</color>
-    <color name="forest_base">@color/ink</color>
-    <color name="pickle_base">@color/ink</color>
 
 </resources>
